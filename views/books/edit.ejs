@@ -1,0 +1,48 @@
+<% include ../partials/header %>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <% include ../partials/nav %>
+                    <h3>Edit <%= book.name %> Info</h3>
+                </div>
+            </div>
+            <% if(typeof hop != 'undefined'){ %>
+            <form action="/<%= book._id %>/update" class='user-form' method="POST">
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for='title'>Title:</label>
+                        <input class='form-control' type='text' name='title' value='<%= book.title %>'>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for='publication_year'>Publication Year:</label>
+                        <input class='form-control' type='text' name='publication_year' value='<%= book.publication_year %>'>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for='type'>Author:</label>
+                        <!-- <select class="custom-select" name='author'>
+                            <option selected>Open this select menu</option>
+                            <option value="<%= book.author %>"><%= book.author %></option>
+                        </select> -->
+                        <!-- <# for(const author of authors) { #>
+                            <option value="<#= author.first_name #>"><#= author.first_name #><#= author.last_name #></option>
+                        <# } #> -->
+                        <input class='form-control' type='text' value='<%= book.author %>' name='author'>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <button class='btn btn-primary btn-sm' type='submit'>Submit</button> <a class="btn btn-link" href="/books/<%= book._id %>/delete">Delete</a>
+                    </div>
+                </div>
+            </div>
+            </form>
+            <% } %>
+        </div>
+<% include ../partials/footer %>

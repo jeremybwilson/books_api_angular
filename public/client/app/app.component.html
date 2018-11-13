@@ -1,0 +1,202 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h3>{{ title }}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <!-- Author Form -->
+            <form (submit)='submitAuthor($event, form)' #authorForm='ngForm'>
+            <div class="form-group row">
+                <label class="col-4">Author</label>
+                <div class="col-4">
+                  <input type="text" class="form-control" name="first_name" placeholder="First name"
+                    [(ngModel)]="author.first_name"
+                    required
+                    #first_name="ngModel"
+                    minlength="2">
+                  <div *ngIf="(first_name.touched || first_name.dirty) && first_name.errors">
+                    <div *ngIf="first_name.errors.required">
+                        Please enter a first name
+                    </div>
+                    <div *ngIf="first_name.errors.minlength">
+                        Name expected to be of at least {{ first_name.errors.minlength.requiredLength }} characters
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <input type="text" class="form-control" name="last_name" placeholder="Last name"
+                  [(ngModel)]="author.last_name"
+                  required
+                  #last_name="ngModel"
+                  minlength="2">
+                  <div *ngIf="(last_name.touched || last_name.dirty) && last_name.errors">
+                      <div *ngIf="last_name.errors.required">
+                      Please enter a last name
+                      </div>
+                      <div *ngIf="last_name.errors.minlength">
+                      Last name expected to be of at least {{ last_name.errors.minlength.requiredLength}} characters
+                      </div>
+                  </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Country of Origin</label>
+                <div class="col-4">
+                <input type="text" class="form-control" name="country" placeholder="Country"
+                [(ngModel)]="author.country"
+                required
+                #country="ngModel"
+                minlength="3">
+                <div *ngIf="(country.touched || country.dirty) && country.errors">
+                    <div *ngIf="country.errors.required">
+                    Please enter a country of origin
+                    </div>
+                    <div *ngIf="country.errors.minlength">
+                    Country of origin expected to be of at least {{country.errors.minlength.requiredLength}} characters
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Birth Date</label>
+                <div class="col-4">
+                <input type="date" class="form-control" name="birth_date" [(ngModel)]="author.birth_date">
+                </div>
+            </div>
+            <div class="form-group row justify-content-end" *ngIf="authorForm.valid">
+                <button class='btn btn btn-primary btn-sm'>Submit Author</button>
+            </div>
+            </form>
+            <br>
+            <!-- Book Form -->
+            <form (submit)='submitBook($event, form)' #bookForm='ngForm'>
+            <div class="form-group row">
+                <label class="col-4 col-form-label">Book Title</label>
+                <div class="col-4">
+                <input type="string" class="form-control" name="title" placeholder="Book Title"
+                [(ngModel)]="book.title"
+                #title="ngModel"
+                required>
+                <div *ngIf="(title.touched || title.dirty) && title.errors">
+                    <div *ngIf="title.errors.required">
+                    Please enter a title
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="form-group row" >
+                <label class="col-4 col-form-label">Author</label>
+                <div class="col-4">
+                <select class="form-control" name="author" #author_id="ngModel" [(ngModel)]="book.author" required>
+                    <option *ngFor="let author of authors" value="{{author._id}}">
+                    {{author.first_name}} {{author.last_name}}
+                    </option>
+                </select>
+                </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-4 col-form-label">Publication Year</label>
+              <div class="col-4">
+                <input type="number" class="form-control" name="publication_year" placeholder="YYYY"
+                [(ngModel)]="book.publication_year"
+                #publication_year="ngModel"
+                required
+                min=1800
+                max=2018>
+                <div *ngIf="(publication_year.touched || publication_year.dirty) && publication_year.errors">
+                  <div *ngIf="publication_year.errors.required">
+                    Please enter publication year
+                  </div>
+                  <div *ngIf="publication_year.errors.max">
+                    Include books published up to the current year
+                  </div>
+                  <div *ngIf='publication_year.min'>
+                    {{ publication_year.min | json }}
+                  </div>
+                  <div *ngIf='publication_year.max'>
+                    {{ publication_year.max | json }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row justify-content-end" *ngIf="bookForm.valid">
+              <button class="btn btn-primary btn-sm">Submit Book</button>
+            </div>
+            </form>
+        <!-- Validation Column -->
+        </div>
+        <div class="col">
+            <div *ngIf="authors">
+            <h4>Authors:</h4>
+            <ul>
+                <li *ngFor="let author of authors" (click)="getAuthor(author)">{{author.first_name}} {{author.last_name}}</li>
+            </ul>
+            </div>
+            <div *ngIf="books">
+            <h4>Books</h4>
+            <ul>
+                <li *ngFor="let book of books" (click)="getBook(book)">{{book.title}}</li>
+            </ul>
+            </div>
+        </div>
+        <!-- Detail Column -->
+        <div class="col-4">
+            <div *ngIf="selectedAuthor">
+            <form (submit)='updateAuthor(selectedAuthor)'>
+                <table class="table table-sm">
+                <tr>
+                    <th scope="row">Name:</th>
+                    <td>
+                      <input type="text" name="first_name" [(ngModel)]="selectedAuthor.first_name"/>
+                      <input type="text" name="last_name" [(ngModel)]="selectedAuthor.last_name"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Country:</th>
+                    <td><input type="text" name="country" [(ngModel)]="selectedAuthor.country"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Books:</th>
+                    <td>
+                    <ul>
+                        <li *ngFor="let book of selectedAuthor.books" (click)="getBook(this.book)">{{book.title}}</li>
+                    </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Actions:</th>
+                    <td>
+                      <button type="submit">Update</button>
+                      <button type="button" (click)="deleteAuthor(selectedAuthor._id)">Delete</button></td>
+                </tr>
+                </table>
+            </form>
+            </div>
+            <div *ngIf="selectedBook">
+            <form (submit)='updateBook(selectedBook)'>
+                <table class="table table-sm">
+                <tr>
+                    <th scope="row">Title:</th>
+                    <td><input type="text" name="title" [(ngModel)]="selectedBook.title"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Author:</th>
+                    <td><input type="text" name="author" [(ngModel)]="selectedBook.author.last_name"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Year of Publication</th>
+                    <td><input type="text" name="publication_year" [(ngModel)]="selectedBook.publication_year"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">Actions:</th>
+                    <td><button type="submit">Update</button><button type="button" (click)="deleteBook(selectedBook._id)">Delete</button></td>
+                </tr>
+                </table>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+<router-outlet></router-outlet>
